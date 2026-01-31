@@ -1,11 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Zap, Calculator, CalendarHeart } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { ArrowLeft, Zap, Calculator, CalendarHeart, UserPlus, X } from 'lucide-react';
 import BottomNav from '@/components/customer/BottomNav';
 
 const IndoorEvents: React.FC = () => {
   const navigate = useNavigate();
+  const [showReferral, setShowReferral] = useState(false);
+  const [referralMobile, setReferralMobile] = useState('');
+
+  const handleBookingClick = (path: string) => {
+    // Store referral info if provided
+    if (referralMobile.trim()) {
+      sessionStorage.setItem('indoor_event_referral', referralMobile.trim());
+    }
+    navigate(path);
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -27,7 +39,7 @@ const IndoorEvents: React.FC = () => {
 
       <main className="container px-4 py-8">
         {/* Hero Section */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h2 className="text-2xl font-display font-bold text-foreground mb-2">
             Plan Your Perfect Event
           </h2>
@@ -36,12 +48,56 @@ const IndoorEvents: React.FC = () => {
           </p>
         </div>
 
+        {/* Referral Section */}
+        <div className="mb-6">
+          {!showReferral ? (
+            <button
+              onClick={() => setShowReferral(true)}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mx-auto"
+            >
+              <UserPlus className="h-4 w-4" />
+              Have a referral? Add reference
+            </button>
+          ) : (
+            <div className="bg-muted/50 rounded-xl p-4 border">
+              <div className="flex items-center justify-between mb-3">
+                <Label className="text-sm font-medium flex items-center gap-2">
+                  <UserPlus className="h-4 w-4" />
+                  Reference Mobile (Optional)
+                </Label>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6"
+                  onClick={() => {
+                    setShowReferral(false);
+                    setReferralMobile('');
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              <Input
+                type="tel"
+                placeholder="Enter referrer's mobile number"
+                value={referralMobile}
+                onChange={(e) => setReferralMobile(e.target.value)}
+                maxLength={10}
+                className="bg-background"
+              />
+              <p className="text-xs text-muted-foreground mt-2">
+                Enter the mobile number of the person who referred you
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* Booking Cards */}
         <div className="space-y-4">
           {/* Quick Booking Card */}
           <div 
             className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 p-6 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
-            onClick={() => navigate('/indoor-events/quick-booking')}
+            onClick={() => handleBookingClick('/indoor-events/quick-booking')}
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
@@ -62,7 +118,7 @@ const IndoorEvents: React.FC = () => {
           {/* Plan & Estimate Card */}
           <div 
             className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-violet-500 via-purple-600 to-indigo-700 p-6 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-xl active:scale-[0.98]"
-            onClick={() => navigate('/indoor-events/planner')}
+            onClick={() => handleBookingClick('/indoor-events/planner')}
           >
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
