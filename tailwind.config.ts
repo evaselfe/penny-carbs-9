@@ -67,7 +67,7 @@ export default {
   			},
   			'indoor-events': 'hsl(var(--indoor-events))',
   			'cloud-kitchen': 'hsl(var(--cloud-kitchen))',
-  			'homemade': 'hsl(var(--homemade))'
+  			homemade: 'hsl(var(--homemade))'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
@@ -78,7 +78,7 @@ export default {
   		},
   		fontFamily: {
   			sans: [
-  				'Work Sans',
+  				'Inter',
   				'ui-sans-serif',
   				'system-ui',
   				'-apple-system',
@@ -105,7 +105,7 @@ export default {
   				'serif'
   			],
   			mono: [
-  				'Inconsolata',
+  				'Space Mono',
   				'ui-monospace',
   				'SFMono-Regular',
   				'Menlo',
