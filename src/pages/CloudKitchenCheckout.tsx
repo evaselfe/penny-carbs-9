@@ -35,6 +35,7 @@ interface LocationState {
     slot_type: string;
     start_time: string;
     end_time: string;
+    delivery_charge?: number;
   };
   totalAmount: number;
 }
@@ -127,7 +128,7 @@ const CloudKitchenCheckout: React.FC = () => {
   }
 
   const { cartItems, division, totalAmount } = state;
-  const deliveryFee = 0; // Free delivery
+  const deliveryFee = division.delivery_charge || 0;
   const grandTotal = totalAmount + deliveryFee;
 
   // Group items by cook for display
@@ -174,6 +175,7 @@ const CloudKitchenCheckout: React.FC = () => {
           customer_id: user.id,
           service_type: 'cloud_kitchen' as const,
           total_amount: grandTotal,
+          delivery_amount: deliveryFee,
           panchayat_id: selectedPanchayat!.id,
           ward_number: selectedWardNumber!,
           delivery_address: deliveryAddress,
@@ -340,7 +342,9 @@ const CloudKitchenCheckout: React.FC = () => {
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Delivery Fee</span>
-              <span className="text-green-600">FREE</span>
+              <span className={deliveryFee === 0 ? 'text-green-600' : ''}>
+                {deliveryFee === 0 ? 'FREE' : `₹${deliveryFee.toFixed(0)}`}
+              </span>
             </div>
             <Separator />
             <div className="flex justify-between font-semibold">

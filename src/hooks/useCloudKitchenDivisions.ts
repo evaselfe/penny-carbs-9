@@ -11,6 +11,7 @@ export interface Division {
   cutoff_hours_before: number;
   is_active: boolean;
   display_order: number;
+  delivery_charge: number;
   food_items_count?: number;
 }
 
@@ -102,6 +103,7 @@ export function useUpdateDivision() {
       end_time?: string;
       cutoff_hours_before?: number;
       is_active?: boolean;
+      delivery_charge?: number;
     }) => {
       const { data: result, error } = await supabase
         .from('cloud_kitchen_slots')

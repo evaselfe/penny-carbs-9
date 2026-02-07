@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Coffee, Sun, Sunset, Moon, Clock, Settings, UtensilsCrossed, ChevronRight } from 'lucide-react';
+import { Coffee, Sun, Sunset, Moon, Clock, Settings, UtensilsCrossed, ChevronRight, IndianRupee } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Division } from '@/hooks/useCloudKitchenDivisions';
 import { formatSlotTime } from '@/hooks/useCloudKitchenSlots';
@@ -75,6 +75,17 @@ const DivisionCard: React.FC<DivisionCardProps> = ({
           </div>
         </div>
 
+        {/* Delivery Charge Display */}
+        <div className="flex items-center justify-between rounded-lg bg-muted p-2">
+          <div className="flex items-center gap-2 text-sm">
+            <IndianRupee className="h-4 w-4 text-primary" />
+            <span className="text-muted-foreground">Delivery Charge:</span>
+          </div>
+          <span className="font-semibold text-primary">
+            ₹{division.delivery_charge || 0}
+          </span>
+        </div>
+
         <div className="flex gap-2">
           <Button
             variant="outline"
@@ -83,7 +94,7 @@ const DivisionCard: React.FC<DivisionCardProps> = ({
             onClick={onEditTime}
           >
             <Settings className="h-4 w-4 mr-1" />
-            Time Settings
+            Settings
           </Button>
           <Button size="sm" className="flex-1" onClick={onManage}>
             Manage Items
