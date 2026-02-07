@@ -137,6 +137,7 @@ export type Database = {
         Row: {
           created_at: string
           cutoff_hours_before: number
+          delivery_charge: number
           display_order: number
           end_time: string
           id: string
@@ -149,6 +150,7 @@ export type Database = {
         Insert: {
           created_at?: string
           cutoff_hours_before?: number
+          delivery_charge?: number
           display_order?: number
           end_time: string
           id?: string
@@ -161,6 +163,7 @@ export type Database = {
         Update: {
           created_at?: string
           cutoff_hours_before?: number
+          delivery_charge?: number
           display_order?: number
           end_time?: string
           id?: string

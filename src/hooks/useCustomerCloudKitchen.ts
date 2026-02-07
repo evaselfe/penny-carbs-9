@@ -36,6 +36,7 @@ export interface ActiveDivision {
   start_time: string;
   end_time: string;
   cutoff_hours_before: number;
+  delivery_charge: number;
   is_ordering_open: boolean;
   time_until_cutoff: { hours: number; minutes: number } | null;
   status_label: 'open' | 'closing_soon' | 'closed';
@@ -139,6 +140,7 @@ export function useCustomerDivisions() {
           start_time: slot.start_time,
           end_time: slot.end_time,
           cutoff_hours_before: slot.cutoff_hours_before,
+          delivery_charge: slot.delivery_charge || 0,
           is_ordering_open: isOpen,
           time_until_cutoff: timeRemaining,
           status_label: statusLabel,

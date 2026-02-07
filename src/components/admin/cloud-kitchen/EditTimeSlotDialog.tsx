@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useUpdateDivision, useDeleteDivision, type Division } from '@/hooks/useCloudKitchenDivisions';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Trash2 } from 'lucide-react';
+import { Trash2, IndianRupee } from 'lucide-react';
 
 interface EditTimeSlotDialogProps {
   open: boolean;
@@ -30,6 +30,7 @@ const EditTimeSlotDialog: React.FC<EditTimeSlotDialogProps> = ({
   const [endTime, setEndTime] = useState('10:00');
   const [cutoffHours, setCutoffHours] = useState(2);
   const [isActive, setIsActive] = useState(true);
+  const [deliveryCharge, setDeliveryCharge] = useState(0);
 
   const updateDivision = useUpdateDivision();
   const deleteDivision = useDeleteDivision();
@@ -41,6 +42,7 @@ const EditTimeSlotDialog: React.FC<EditTimeSlotDialogProps> = ({
       setEndTime(division.end_time.slice(0, 5));
       setCutoffHours(division.cutoff_hours_before);
       setIsActive(division.is_active);
+      setDeliveryCharge(division.delivery_charge || 0);
     }
   }, [division]);
 
@@ -55,6 +57,7 @@ const EditTimeSlotDialog: React.FC<EditTimeSlotDialogProps> = ({
       end_time: endTime,
       cutoff_hours_before: cutoffHours,
       is_active: isActive,
+      delivery_charge: deliveryCharge,
     });
 
     onOpenChange(false);
@@ -122,6 +125,26 @@ const EditTimeSlotDialog: React.FC<EditTimeSlotDialogProps> = ({
             />
             <p className="text-xs text-muted-foreground">
               Orders close {cutoffHours} hours before slot starts
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="edit-delivery-charge">Delivery Charge (₹)</Label>
+            <div className="relative">
+              <IndianRupee className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="edit-delivery-charge"
+                type="number"
+                min="0"
+                step="1"
+                value={deliveryCharge}
+                onChange={(e) => setDeliveryCharge(parseFloat(e.target.value) || 0)}
+                className="pl-9"
+                required
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Delivery charge applied to orders in this division
             </p>
           </div>
 
