@@ -46,11 +46,17 @@ const PopularItems: React.FC<PopularItemsProps> = ({
   const { addToCart } = useCart();
   const { selectedPanchayat } = useLocation();
   const { requireAuth, showLoginDialog, setShowLoginDialog, onLoginSuccess } = useAuthCheck();
-  const { data: allocatedIds } = useCookAllocatedItemIds();
+  const { data: allocatedIds, isLoading: allocatedIdsLoading } = useCookAllocatedItemIds();
   const [items, setItems] = useState<FoodItemWithImages[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // For homemade, wait for allocatedIds to load before fetching
+  const isHomemade = serviceType === 'homemade';
+  const allocatedIdsReady = !isHomemade || !allocatedIdsLoading;
+
   useEffect(() => {
+    if (!allocatedIdsReady) return;
+
     const fetchItems = async () => {
       try {
         let query = supabase
@@ -73,7 +79,7 @@ const PopularItems: React.FC<PopularItemsProps> = ({
         if (error) throw error;
         // For homemade items, only show those allocated to an active cook
         let filtered = data as FoodItemWithImages[];
-        if (serviceType === 'homemade' && allocatedIds) {
+        if (isHomemade && allocatedIds) {
           filtered = filtered.filter(item => allocatedIds.has(item.id));
         }
         setItems(filtered);
@@ -84,7 +90,7 @@ const PopularItems: React.FC<PopularItemsProps> = ({
       }
     };
     fetchItems();
-  }, [serviceType, limit, selectedPanchayat, allocatedIds]);
+  }, [serviceType, limit, selectedPanchayat, allocatedIds, allocatedIdsReady, isHomemade]);
 
   const handleAddToCart = async (e: React.MouseEvent, item: FoodItemWithImages) => {
     e.stopPropagation();
