@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -16,12 +16,17 @@ import {
   Clock,
   BarChart3,
   Settings,
-  MapPin
+  UtensilsCrossed,
 } from 'lucide-react';
+import HomeDeliveryItems from './HomeDeliveryItems';
+import HomeDeliveryDelivery from './HomeDeliveryDelivery';
+
+type SubPage = 'dashboard' | 'items' | 'delivery';
 
 const HomeDeliveryModule: React.FC = () => {
   const navigate = useNavigate();
   const { role } = useAuth();
+  const [currentPage, setCurrentPage] = useState<SubPage>('dashboard');
 
   const isAdmin = role === 'super_admin' || role === 'admin';
 
@@ -64,11 +69,50 @@ const HomeDeliveryModule: React.FC = () => {
     );
   }
 
+  // Sub-page rendering
+  if (currentPage === 'items') {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-50 border-b bg-homemade text-white">
+          <div className="flex h-14 items-center px-4">
+            <Home className="h-6 w-6 mr-2" />
+            <h1 className="font-display text-lg font-semibold">Home Food Delivery</h1>
+          </div>
+        </header>
+        <main className="p-4 pb-20">
+          <HomeDeliveryItems onBack={() => setCurrentPage('dashboard')} />
+        </main>
+      </div>
+    );
+  }
+
+  if (currentPage === 'delivery') {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-50 border-b bg-homemade text-white">
+          <div className="flex h-14 items-center px-4">
+            <Home className="h-6 w-6 mr-2" />
+            <h1 className="font-display text-lg font-semibold">Home Food Delivery</h1>
+          </div>
+        </header>
+        <main className="p-4 pb-20">
+          <HomeDeliveryDelivery onBack={() => setCurrentPage('dashboard')} />
+        </main>
+      </div>
+    );
+  }
+
   const menuItems = [
+    {
+      icon: UtensilsCrossed,
+      label: 'Manage Items',
+      action: () => setCurrentPage('items'),
+      description: 'View & toggle homemade food items',
+    },
     { 
       icon: ShoppingBag, 
       label: 'Live Orders', 
-      path: '/admin/home-delivery/orders',
+      action: () => navigate('/admin/home-delivery/orders'),
       description: 'Instant orders & ETA tracking',
       badge: stats?.newOrders,
       badgeVariant: 'destructive' as const
@@ -76,32 +120,32 @@ const HomeDeliveryModule: React.FC = () => {
     { 
       icon: ChefHat, 
       label: 'Cook Assignment', 
-      path: '/admin/home-delivery/cooks',
+      action: () => navigate('/admin/home-delivery/cooks'),
       description: 'Assign cooks to orders'
     },
     { 
       icon: Truck, 
-      label: 'Delivery Assignment', 
-      path: '/admin/home-delivery/delivery',
-      description: 'Manage delivery staff',
+      label: 'Delivery Staff', 
+      action: () => setCurrentPage('delivery'),
+      description: 'View delivery staff & status',
       badge: stats?.outForDelivery
     },
     { 
       icon: Clock, 
       label: 'ETA Management', 
-      path: '/admin/home-delivery/eta',
+      action: () => navigate('/admin/home-delivery/eta'),
       description: 'Auto ETA configuration'
     },
     { 
       icon: Wallet, 
       label: 'Cash Settlement', 
-      path: '/admin/home-delivery/settlements',
+      action: () => navigate('/admin/home-delivery/settlements'),
       description: 'Collection & settlement approval'
     },
     { 
       icon: BarChart3, 
       label: 'Delivery Reports', 
-      path: '/admin/home-delivery/reports',
+      action: () => navigate('/admin/home-delivery/reports'),
       description: 'Ward-wise performance reports'
     },
   ];
@@ -195,11 +239,11 @@ const HomeDeliveryModule: React.FC = () => {
 
         {/* Menu Grid */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {menuItems.map((item) => (
+          {menuItems.map((item, idx) => (
             <Card 
-              key={item.path}
+              key={idx}
               className="cursor-pointer transition-all hover:shadow-md hover:border-homemade/50"
-              onClick={() => navigate(item.path)}
+              onClick={item.action}
             >
               <CardContent className="flex items-center gap-4 p-4">
                 <div className="rounded-xl bg-homemade/10 p-3 text-homemade">
