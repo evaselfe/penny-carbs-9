@@ -10,6 +10,7 @@ import BottomNav from '@/components/customer/BottomNav';
 import EventTypeSelector from '@/components/events/EventTypeSelector';
 import StepDialog from '@/components/indoor-events/StepDialog';
 import QuickBookingFoodSelection from '@/components/indoor-events/QuickBookingFoodSelection';
+import { useEventTypes } from '@/hooks/useEventTypes';
 import type { EventType } from '@/types/events';
 import type { FoodItem } from '@/hooks/useIndoorEventItems';
 
@@ -25,9 +26,17 @@ const presetCounts = [10, 25, 50, 100, 150, 200, 300];
 
 const IndoorEvents: React.FC = () => {
   const navigate = useNavigate();
+  const { data: eventTypes } = useEventTypes();
   const [showReferral, setShowReferral] = useState(false);
   const [referralMobile, setReferralMobile] = useState('');
   const [selectedEventType, setSelectedEventType] = useState<EventType | null>(null);
+
+  // Auto-select first event type (default) when data loads
+  React.useEffect(() => {
+    if (eventTypes?.length && !selectedEventType) {
+      setSelectedEventType(eventTypes[0]);
+    }
+  }, [eventTypes]);
   
   // Popup state
   const [bookingMode, setBookingMode] = useState<BookingMode>(null);
