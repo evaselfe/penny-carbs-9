@@ -261,11 +261,17 @@ const OrderDetail: React.FC = () => {
                 const itemTotal = customerPrice * item.quantity;
                 return (
                   <div key={item.id} className="flex justify-between border-b pb-3 last:border-0 last:pb-0">
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium">{item.food_item?.name || 'Item'}</p>
                       <p className="text-sm text-muted-foreground">
                         ₹{customerPrice} × {item.quantity}
                       </p>
+                      {item.assigned_cook_id && cooksMap[item.assigned_cook_id] && (
+                        <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <ChefHat className="h-3 w-3 text-primary" />
+                          <span>{cooksMap[item.assigned_cook_id].kitchen_name}</span>
+                        </div>
+                      )}
                       {item.special_instructions && (
                         <p className="text-xs text-muted-foreground mt-1">
                           Note: {item.special_instructions}
