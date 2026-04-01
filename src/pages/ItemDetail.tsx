@@ -85,7 +85,14 @@ const ItemDetail: React.FC = () => {
             }
 
             const activeCooks = cookDishes
-              .filter((cd: any) => cd.cooks?.is_active && cd.cooks?.is_available)
+              .filter((cd: any) => {
+                if (!cd.cooks?.is_active || !cd.cooks?.is_available) return false;
+                if (selectedPanchayat?.id) {
+                  const assignedPanchayats: string[] = cd.cooks.assigned_panchayat_ids || [];
+                  return assignedPanchayats.includes(selectedPanchayat.id) || cd.cooks.panchayat_id === selectedPanchayat.id;
+                }
+                return true;
+              })
               .map((cd: any) => ({
                 cook_id: cd.cook_id,
                 kitchen_name: cd.cooks.kitchen_name,
