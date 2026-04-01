@@ -38,6 +38,8 @@ const AdminDashboard: React.FC = () => {
   } = useAdminDeliveryAlerts();
 
   const isAdmin = role === 'super_admin' || role === 'admin';
+  const { data: serviceModules } = useServiceModules();
+  const toggleModule = useToggleServiceModule();
 
   if (!isAdmin) {
     return (
