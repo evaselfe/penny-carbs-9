@@ -157,23 +157,44 @@ const AdminDashboard: React.FC = () => {
         {/* Module Cards */}
         <h3 className="mb-4 text-lg font-semibold">Operational Modules</h3>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {modules.map((module) => (
-            <Card 
-              key={module.id}
-              className="cursor-pointer transition-all hover:shadow-md"
-              onClick={() => navigate(module.path)}
-            >
-              <CardContent className="flex items-center gap-4 p-4">
-                <div className={`rounded-xl bg-gradient-to-br ${module.gradient} p-3 text-white`}>
-                  <module.icon className="h-6 w-6" />
-                </div>
-                <div>
-                  <h4 className="font-medium">{module.title}</h4>
-                  <p className="text-sm text-muted-foreground">{module.description.split(',')[0]}</p>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          {modules.map((module) => {
+            const serviceTypeMap: Record<string, string> = {
+              'indoor-events': 'indoor_events',
+              'cloud-kitchen': 'cloud_kitchen',
+              'home-delivery': 'homemade',
+            };
+            const svcType = serviceTypeMap[module.id];
+            const svcModule = serviceModules?.find((m) => m.service_type === svcType);
+            const isActive = svcModule?.is_active ?? true;
+
+            return (
+              <Card 
+                key={module.id}
+                className={`transition-all hover:shadow-md ${!isActive ? 'opacity-60' : ''}`}
+              >
+                <CardContent className="flex items-center gap-4 p-4">
+                  <div 
+                    className={`rounded-xl bg-gradient-to-br ${module.gradient} p-3 text-white cursor-pointer`}
+                    onClick={() => navigate(module.path)}
+                  >
+                    <module.icon className="h-6 w-6" />
+                  </div>
+                  <div className="flex-1 cursor-pointer" onClick={() => navigate(module.path)}>
+                    <h4 className="font-medium">{module.title}</h4>
+                    <p className="text-sm text-muted-foreground">{module.description.split(',')[0]}</p>
+                  </div>
+                  {role === 'super_admin' && svcModule && (
+                    <Switch
+                      checked={isActive}
+                      onCheckedChange={(checked) =>
+                        toggleModule.mutate({ id: svcModule.id, is_active: checked })
+                      }
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Common Utilities */}

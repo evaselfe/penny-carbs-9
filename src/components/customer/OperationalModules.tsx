@@ -54,10 +54,13 @@ const OperationalModules: React.FC = () => {
     }
   };
 
+  if (isLoading) return null;
+  if (filteredModules.length === 0) return null;
+
   return (
     <div className="sticky top-16 z-40 w-full border-b bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="flex items-center justify-around gap-2 px-2 py-2">
-        {modules.map((module) => (
+        {filteredModules.map((module) => (
           <button
             key={module.id}
             onClick={() => handleModuleClick(module.id)}
