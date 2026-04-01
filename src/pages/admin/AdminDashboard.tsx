@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import UnacceptedOrdersAlert from '@/components/admin/UnacceptedOrdersAlert';
+import { Switch } from '@/components/ui/switch';
+import { useServiceModules, useToggleServiceModule } from '@/hooks/useServiceModules';
 import { 
   CalendarHeart,
   ChefHat,
