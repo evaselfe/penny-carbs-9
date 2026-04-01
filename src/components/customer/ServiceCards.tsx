@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Calendar, ChefHat, Home } from 'lucide-react';
 import type { ServiceType } from '@/types/database';
+import { useActiveServiceTypes } from '@/hooks/useServiceModules';
 
 interface ServiceCardData {
   id: ServiceType;
@@ -42,9 +43,13 @@ const services: ServiceCardData[] = [
 
 const ServiceCards: React.FC = () => {
   const navigate = useNavigate();
+  const { data: activeTypes } = useActiveServiceTypes();
+
+  const filteredServices = activeTypes
+    ? services.filter((s) => activeTypes.includes(s.id))
+    : services;
 
   const handleServiceClick = (serviceType: ServiceType) => {
-    // Each service has its own booking flow
     if (serviceType === 'indoor_events') {
       navigate('/indoor-events');
     } else if (serviceType === 'cloud_kitchen') {
@@ -54,13 +59,15 @@ const ServiceCards: React.FC = () => {
     }
   };
 
+  if (filteredServices.length === 0) return null;
+
   return (
     <section className="px-4 py-6 bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 dark:from-orange-950/30 dark:via-amber-950/20 dark:to-yellow-950/10">
       <h2 className="mb-4 font-display text-lg font-semibold text-foreground">
         What are you looking for?
       </h2>
       <div className="grid gap-4 sm:grid-cols-3">
-        {services.map((service) => (
+        {filteredServices.map((service) => (
           <Card
             key={service.id}
             className={`cursor-pointer overflow-hidden bg-gradient-to-br ${service.bgGradient} transition-all hover:scale-[1.02] hover:shadow-lg`}
