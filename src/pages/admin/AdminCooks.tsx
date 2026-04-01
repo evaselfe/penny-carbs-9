@@ -251,6 +251,7 @@ const AdminCooks: React.FC = () => {
     form.setValue('kitchenName', staff.name + "'s Kitchen");
     if (staff.panchayat_id) {
       form.setValue('panchayatId', staff.panchayat_id);
+      form.setValue('assignedPanchayatIds', [staff.panchayat_id]);
     }
     form.setValue('userId', staff.user_id);
     setSearchResults([]);
