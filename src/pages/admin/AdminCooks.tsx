@@ -377,6 +377,48 @@ const AdminCooks: React.FC = () => {
     }
   };
 
+  const handleOpenEdit = (cook: Cook) => {
+    setEditCook(cook);
+    setEditForm({
+      kitchen_name: cook.kitchen_name,
+      mobile_number: cook.mobile_number,
+      panchayat_id: cook.panchayat_id || '',
+      assigned_panchayat_ids: cook.assigned_panchayat_ids || [],
+      allowed_order_types: cook.allowed_order_types || [],
+      is_active: cook.is_active,
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleEditSubmit = async () => {
+    if (!editCook) return;
+    setIsEditSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('cooks')
+        .update({
+          kitchen_name: editForm.kitchen_name,
+          mobile_number: editForm.mobile_number,
+          panchayat_id: editForm.panchayat_id || null,
+          assigned_panchayat_ids: editForm.assigned_panchayat_ids,
+          allowed_order_types: editForm.allowed_order_types,
+          is_active: editForm.is_active,
+        })
+        .eq('id', editCook.id);
+
+      if (error) throw error;
+
+      toast({ title: 'Cook Updated', description: `${editForm.kitchen_name} updated successfully` });
+      setIsEditDialogOpen(false);
+      setEditCook(null);
+      queryClient.invalidateQueries({ queryKey: ['admin-cooks'] });
+    } catch (error: any) {
+      toast({ title: 'Error', description: error.message || 'Failed to update cook', variant: 'destructive' });
+    } finally {
+      setIsEditSubmitting(false);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
       pending: 'bg-yellow-500',
