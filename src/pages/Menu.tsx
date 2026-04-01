@@ -49,7 +49,8 @@ const Menu: React.FC = () => {
   const navigate = useNavigate();
   const { addToCart } = useCart();
   const { requireAuth, showLoginDialog, setShowLoginDialog, onLoginSuccess } = useAuthCheck();
-  const { data: allocatedIds } = useCookAllocatedItemIds();
+  const { selectedPanchayat } = useLocation();
+  const { data: allocatedIds } = useCookAllocatedItemIds(selectedPanchayat?.id);
   const { lowestCookPrices } = useLowestCookPrices();
   
   const [items, setItems] = useState<FoodItemWithImages[]>([]);
