@@ -277,6 +277,23 @@ const DeliveryRulesTab: React.FC = () => {
               />
             </div>
 
+            <div className="space-y-2">
+              <Label>Reduced Charge Above Threshold (₹) <span className="text-muted-foreground text-xs">Optional</span></Label>
+              <p className="text-xs text-muted-foreground">
+                When order amount exceeds "Free Delivery Above", charge this amount instead of min charge. Leave empty for free delivery.
+              </p>
+              <Input
+                type="number"
+                min="0"
+                placeholder="e.g. 20"
+                value={form.charge_above_threshold ?? ''}
+                onChange={(e) => setForm(prev => ({
+                  ...prev,
+                  charge_above_threshold: e.target.value ? Number(e.target.value) : null,
+                }))}
+              />
+            </div>
+
             <Button
               className="w-full"
               onClick={handleSubmit}
