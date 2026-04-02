@@ -133,10 +133,10 @@ const CustomerLoginDialog: React.FC<CustomerLoginDialogProps> = ({
         if (error.message.includes('not found')) {
           toast({
             title: 'Account not found',
-            description: 'Please register first to continue',
+            description: 'Please complete registration to continue',
             variant: 'destructive',
           });
-          setActiveTab('signup');
+          setIsSignupMode(true);
           signupForm.setValue('mobileNumber', data.mobileNumber);
         } else {
           toast({
