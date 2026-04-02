@@ -296,7 +296,7 @@ const ItemDetail: React.FC = () => {
             size="icon"
             className="rounded-full bg-card/90 shadow-md backdrop-blur"
             onClick={() => {
-              const url = window.location.href;
+              const url = `${window.location.origin}/item/${itemId}`;
               navigator.clipboard.writeText(url);
               setCopied(true);
               toast.success('Link copied!');
