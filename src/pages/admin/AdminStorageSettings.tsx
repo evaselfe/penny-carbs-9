@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Trash2, Save, Cloud, Settings, Lock } from 'lucide-react';
+import { Plus, Trash2, Save, Cloud, Settings, Lock, Loader2 } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import {
   useStorageProviders,
