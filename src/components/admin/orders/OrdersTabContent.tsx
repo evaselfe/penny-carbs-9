@@ -296,9 +296,27 @@ const OrdersTabContent: React.FC<OrdersTabContentProps> = ({ serviceType }) => {
                           <p className="text-sm text-muted-foreground">
                             {order.profiles?.name || 'Unknown Customer'}
                           </p>
-                          <p className="text-xs text-muted-foreground">
-                            {order.profiles?.mobile_number}
-                          </p>
+                          {order.profiles?.mobile_number && (
+                            <div className="flex items-center gap-1.5 mt-1">
+                              <span className="text-xs text-muted-foreground">{order.profiles.mobile_number}</span>
+                              <a
+                                href={`tel:${order.profiles.mobile_number}`}
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+                              >
+                                <Phone className="h-3 w-3" />
+                              </a>
+                              <a
+                                href={`https://wa.me/91${order.profiles.mobile_number.replace(/\D/g, '').slice(-10)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e) => e.stopPropagation()}
+                                className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-green-600 text-white hover:bg-green-700"
+                              >
+                                <MessageCircle className="h-3 w-3" />
+                              </a>
+                            </div>
+                          )}
                         </div>
                         <div className="flex flex-col items-end gap-1">
                           <Badge className={`gap-1 ${status.color}`}>
