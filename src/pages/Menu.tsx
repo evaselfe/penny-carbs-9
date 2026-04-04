@@ -64,9 +64,11 @@ const Menu: React.FC = () => {
   const validServiceType = serviceType as ServiceType;
   const serviceInfo = serviceTypeLabels[validServiceType] || { title: 'Menu', emoji: '🍽️' };
 
-  // For homemade, wait for allocatedIds to load before fetching
+  // For homemade and cloud_kitchen, wait for allocatedIds to load before fetching
   const isHomemade = validServiceType === 'homemade';
-  const allocatedIdsReady = !isHomemade || allocatedIds !== undefined;
+  const isCloudKitchen = validServiceType === 'cloud_kitchen';
+  const needsCookCheck = isHomemade || isCloudKitchen;
+  const allocatedIdsReady = !needsCookCheck || allocatedIds !== undefined;
 
   useEffect(() => {
     const fetchData = async () => {
