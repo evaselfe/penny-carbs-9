@@ -63,34 +63,6 @@ const CookAllocatedDishes: React.FC = () => {
     }
   };
 
-  const handleImageUpload = async (cookDishId: string, imageUrl: string) => {
-    try {
-      const { error } = await supabase
-        .from('cook_dish_images')
-        .insert({
-          cook_dish_id: cookDishId,
-          image_url: imageUrl,
-          display_order: 0,
-        });
-      if (error) throw error;
-      queryClient.invalidateQueries({ queryKey: ['cook-allocated-dishes'] });
-    } catch (error: any) {
-      toast({ title: 'Failed to save image', description: error.message, variant: 'destructive' });
-    }
-  };
-
-  const handleImageRemove = async (cookDishId: string) => {
-    try {
-      const { error } = await supabase
-        .from('cook_dish_images')
-        .delete()
-        .eq('cook_dish_id', cookDishId);
-      if (error) throw error;
-      queryClient.invalidateQueries({ queryKey: ['cook-allocated-dishes'] });
-    } catch (error: any) {
-      toast({ title: 'Failed to remove image', description: error.message, variant: 'destructive' });
-    }
-  };
 
   return (
     <Card>
