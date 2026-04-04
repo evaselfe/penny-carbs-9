@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import type { Banner } from '@/types/database';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,8 +12,12 @@ import {
 } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from '@/hooks/use-toast';
 
 const BannerCarousel: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, profile } = useAuth();
   const [banners, setBanners] = useState<Banner[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const isMobile = useIsMobile();
@@ -37,6 +42,37 @@ const BannerCarousel: React.FC = () => {
 
     fetchBanners();
   }, []);
+
+  const handleBannerClick = async (banner: Banner) => {
+    // If banner has no link, do nothing
+    if (!banner.link_url || banner.link_url === '#') return;
+
+    // If banner has a service_type and user is logged in with a panchayat, check availability
+    if (banner.service_type && user && profile?.panchayat_id) {
+      const { count, error } = await supabase
+        .from('food_items')
+        .select('id', { count: 'exact', head: true })
+        .eq('service_type', banner.service_type)
+        .eq('is_available', true)
+        .or(`available_all_panchayats.eq.true,available_panchayat_ids.cs.{${profile.panchayat_id}}`);
+
+      if (!error && (count === null || count === 0)) {
+        toast({
+          title: 'Not available in your area',
+          description: 'This service is not yet available in your panchayat.',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+
+    // Navigate - handle internal vs external links
+    if (banner.link_url.startsWith('/')) {
+      navigate(banner.link_url);
+    } else {
+      window.open(banner.link_url, '_blank');
+    }
+  };
 
   if (isLoading) {
     return (
@@ -102,9 +138,9 @@ const BannerCarousel: React.FC = () => {
         <CarouselContent className="-ml-3">
           {banners.map((banner) => (
             <CarouselItem key={banner.id} className={`pl-3 ${isMobile ? 'basis-full' : 'basis-1/3'}`}>
-              <a
-                href={banner.link_url || '#'}
-                className="relative block overflow-hidden rounded-xl aspect-[3/4]"
+              <div
+                onClick={() => handleBannerClick(banner)}
+                className="relative block overflow-hidden rounded-xl aspect-[3/4] cursor-pointer"
               >
                 <img
                   src={banner.image_url}
@@ -115,7 +151,7 @@ const BannerCarousel: React.FC = () => {
                 <div className="absolute bottom-4 left-4 right-4">
                   <h3 className="text-lg font-bold text-white">{banner.title}</h3>
                 </div>
-              </a>
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>
